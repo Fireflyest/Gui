@@ -55,16 +55,18 @@ public class ViewProtocol {
                         if (event.getPacketType() != PacketType.Play.Server.WINDOW_ITEMS) return;
 
                         String playerName = event.getPlayer().getName();
-                        ViewPage page = viewGuide.getUsingPage(playerName);
-                        // 判断玩家是否正在浏览界面
-                        if (page == null) return;
+
+                        if(!viewGuide.isViewer(playerName)) return;
 
                         PacketContainer packet = event.getPacket();
 
                         // 判断是否更新玩家背包
                         if(packet.getIntegers().read(0) != 0 && !packets.containsKey(playerName)){
 //                            System.out.println("ViewProtocol.onPacketSending");
-                            
+
+                            ViewPage page = viewGuide.getUsingPage(playerName);
+                            // 判断玩家是否正在浏览界面
+                            if (page == null) return;
                             int size = page.getInventory().getSize();
 
                             // 放置按钮

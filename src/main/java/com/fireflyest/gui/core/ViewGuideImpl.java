@@ -106,6 +106,6 @@ public class ViewGuideImpl implements ViewGuide {
 
     @Override
     public boolean isViewer(String playerName) {
-        return viewUsing.containsKey(playerName) && viewUsing.get(playerName) != null;
+        return viewUsing.containsKey(playerName) && viewUsing.get(playerName) != errorView.getFirstPage(ErrorView.NOT_FOUND);
     }
 }
