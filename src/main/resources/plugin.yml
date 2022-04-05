@@ -1,0 +1,8 @@
+main: com.fireflyest.gui.Gui
+name: Gui
+version: 1.0-SNAPSHOT
+description: 前置插件，箱子界面
+api-version: 1.13
+authors: [Fireflyest]
+
+
