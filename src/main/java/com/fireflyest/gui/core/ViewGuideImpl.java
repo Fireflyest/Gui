@@ -6,6 +6,7 @@ import com.fireflyest.gui.api.ViewGuide;
 import com.fireflyest.gui.api.ViewPage;
 import com.fireflyest.gui.protocol.ViewProtocol;
 import com.fireflyest.gui.view.ErrorView;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -74,14 +75,20 @@ public class ViewGuideImpl implements ViewGuide {
         player.closeInventory();
         String playerName = player.getName();
         // 设置玩家正在浏览的界面
-        View<? extends ViewPage> view = viewMap.getOrDefault(viewName, errorView);
-        viewUsing.put(playerName, view.getFirstPage(target));
-        // 打开容器
-        ViewPage page = viewUsing.get(playerName);
-        if (page == null) {
-            page = errorView.getFirstPage(ErrorView.NOT_FOUND);
+        if(! viewMap.containsKey(viewName)){
+            Bukkit.getLogger().warning(String.format("[Gui]view %s does not exist.", viewName));
+            return;
         }
-        player.openInventory(page.getInventory());
+        View<? extends ViewPage> view = viewMap.get(viewName);
+        // 获取首页
+        ViewPage page = view.getFirstPage(target);
+        if (page != null) {
+            viewUsing.put(playerName, page);
+        }else {
+            viewUsing.put(playerName, errorView.getFirstPage(ErrorView.NOT_FOUND));
+        }
+        // 打开容器
+        player.openInventory(viewUsing.get(playerName).getInventory());
     }
 
     @Override

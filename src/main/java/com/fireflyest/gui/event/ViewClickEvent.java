@@ -79,4 +79,14 @@ public class ViewClickEvent extends InventoryInteractEvent {
     public ClickType getClick() {
         return this.click;
     }
+
+    @Override
+    public String toString() {
+        return "ViewClickEvent{" +
+                "click=" + click +
+                ", whichSlot=" + whichSlot +
+                ", rawSlot=" + rawSlot +
+                ", current=" + current +
+                '}';
+    }
 }

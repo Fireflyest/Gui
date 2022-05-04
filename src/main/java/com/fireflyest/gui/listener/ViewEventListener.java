@@ -32,6 +32,7 @@ public class ViewEventListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
         String playerName = event.getWhoClicked().getName();
+//        System.out.printf("onInventoryClick = %s 点击了容器 位置 %s\n", playerName, event.getRawSlot());
         if (guide.isViewer(playerName)){
             // 取消点击
             event.setCancelled(true);
@@ -41,11 +42,21 @@ public class ViewEventListener implements Listener {
             Map<Integer, ItemStack> itemMap = new HashMap<>();
             itemMap.putAll(page.getItemMap());
             itemMap.putAll(page.getButtonMap());
+//            System.out.printf("onInventoryClick 容器物品数量 = %s\n", itemMap.size());
 
             ItemStack clickItem = itemMap.get(event.getRawSlot());
+//            if (clickItem != null) {
+//                System.out.printf("onInventoryClick 点击物品 = %s\n", clickItem.getType());
+//                System.out.printf("onInventoryClick 物品数量 = %s\n", clickItem.getAmount());
+//            }
+
             // 事件
             ViewClickEvent clickEvent = new ViewClickEvent(event.getView(), event.getClick(), event.getSlot(), clickItem);
+//            System.out.println("onInventoryClick 发布事件 onViewClick");
             Bukkit.getPluginManager().callEvent(clickEvent);
+//            System.out.println("onInventoryClick 点击事件结束");
+//            System.out.println("******************************************************");
+
             //
             guide.refreshPage(playerName);
         }
