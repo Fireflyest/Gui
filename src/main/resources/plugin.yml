@@ -1,6 +1,6 @@
 main: com.fireflyest.gui.Gui
 name: Gui
-version: 1.0-SNAPSHOT
+version: 1.0.3
 description: 前置插件，箱子界面
 depend: [ProtocolLib]
 api-version: 1.13

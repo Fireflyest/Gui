@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -28,18 +29,19 @@ public class ErrorPage implements ViewPage {
     }
 
     @Override
-    public Map<Integer, ItemStack> getItemMap() {
+    public @NotNull Map<Integer, ItemStack> getItemMap() {
         Map<Integer, ItemStack> itemStackMap = new HashMap<>(itemMap);
         itemStackMap.put(0, new ItemStack(Material.STONE));
         return itemStackMap;
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtonMap() {
+    public @NotNull Map<Integer, ItemStack> getButtonMap() {
         return new HashMap<>(itemMap);
     }
 
     @Override
+    @NotNull
     public Inventory getInventory() {
         return inventory;
     }

@@ -32,8 +32,10 @@ public class Gui extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
+        // 新建导航
         viewGuide = new ViewGuideImpl();
 
+        // 注册监听
         this.getServer().getPluginManager().registerEvents( new ViewEventListener(), this);
 
         // 注册服务

@@ -8,6 +8,7 @@ import com.fireflyest.gui.protocol.ViewProtocol;
 import com.fireflyest.gui.view.ErrorView;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,22 +35,22 @@ public class ViewGuideImpl implements ViewGuide {
     }
 
     @Override
-    public void addView(String viewName, View<? extends ViewPage> view) {
+    public void addView(@NotNull String viewName, @NotNull View<? extends ViewPage> view) {
         viewMap.put(viewName, view);
     }
 
     @Override
-    public void closeView(String playerName) {
+    public void closeView(@NotNull String playerName) {
         viewUsing.remove(playerName);
     }
 
     @Override
-    public ViewPage getUsingPage(String playerName) {
+    public ViewPage getUsingPage(@NotNull String playerName) {
         return viewUsing.getOrDefault(playerName, errorView.getFirstPage(ErrorView.NOT_FOUND));
     }
 
     @Override
-    public void nextPage(Player player) {
+    public void nextPage(@NotNull Player player) {
         String playerName = player.getName();
         ViewPage page = this.getUsingPage(playerName).getNext();
         if (page != null) {
@@ -60,7 +61,7 @@ public class ViewGuideImpl implements ViewGuide {
     }
 
     @Override
-    public void prePage(Player player) {
+    public void prePage(@NotNull Player player) {
         String playerName = player.getName();
         ViewPage page = this.getUsingPage(playerName).getPre();
         if (page != null) {
@@ -71,21 +72,25 @@ public class ViewGuideImpl implements ViewGuide {
     }
 
     @Override
-    public void openView(Player player, String viewName, String target) {
+    public void openView(@NotNull Player player, @NotNull String viewName, String target) {
+        // 关闭正在浏览的界面
         player.closeInventory();
         String playerName = player.getName();
-        // 设置玩家正在浏览的界面
+        // 判断视图是否存在
         if(! viewMap.containsKey(viewName)){
-            Bukkit.getLogger().warning(String.format("[Gui]view %s does not exist.", viewName));
+            Bukkit.getLogger().warning(String.format("[Gui]View '%s' does not exist.", viewName));
             return;
         }
+        // 获取视图
         View<? extends ViewPage> view = viewMap.get(viewName);
-        // 获取首页
+        // 获取视图的首页
         ViewPage page = view.getFirstPage(target);
+        // 首页是否存在
         if (page != null) {
+            // 设置玩家正在浏览的视图
             viewUsing.put(playerName, page);
         }else {
-            viewUsing.put(playerName, errorView.getFirstPage(ErrorView.NOT_FOUND));
+            Bukkit.getLogger().warning(String.format("[Gui]The first page of the '%s' does not exist.", viewName));
         }
         // 打开容器
         player.openInventory(viewUsing.get(playerName).getInventory());

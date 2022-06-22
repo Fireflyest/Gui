@@ -74,13 +74,15 @@ public class ViewEventListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event){
         String playerName = event.getPlayer().getName();
-        if (guide.isViewer(playerName)){
-            // 取消点击
-            if(guide.getUsingPage(playerName) != null) {
-                guide.closeView(playerName);
-            }
-            ViewProtocol.getPackets().remove(playerName);
+        // 判断是否在浏览
+        if (! guide.isViewer(playerName)) return;
+
+        // 关闭界面
+        if(guide.getUsingPage(playerName) != null) {
+            guide.closeView(playerName);
         }
+        // 删除数据包
+        ViewProtocol.getPackets().remove(playerName);
     }
 
 }

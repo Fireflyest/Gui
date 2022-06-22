@@ -54,10 +54,9 @@ public class ViewProtocol {
                     public void onPacketSending(PacketEvent event) {
                         if (event.getPacketType() != PacketType.Play.Server.WINDOW_ITEMS) return;
 
+                        // 获取数据包
                         String playerName = event.getPlayer().getName();
-
                         if(!viewGuide.isViewer(playerName)) return;
-
                         PacketContainer packet = event.getPacket();
 
                         // 判断是否更新玩家背包
@@ -69,12 +68,12 @@ public class ViewProtocol {
                             if (page == null) return;
                             int size = page.getInventory().getSize();
 
-                            // 放置按钮
+                            // 放置固定按钮
                             List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
-                            for (Map.Entry<Integer, ItemStack> entry : page.getItemMap().entrySet()) {
+                            for (Map.Entry<Integer, ItemStack> entry : page.getButtonMap().entrySet()) {
                                 itemStacks.set(entry.getKey(), entry.getValue());
                             }
-                            // 删除背包的物品
+                            // 删除容器的物品
                             Iterator<ItemStack> iterator = itemStacks.listIterator(size);
                             do {
                                 iterator.next();
@@ -86,6 +85,7 @@ public class ViewProtocol {
                             // 存包
                             packets.put(playerName, packet);
 
+                            // 更新动态按钮
                             sendItemsPacketAsynchronously(playerName);
                         }
                     }
@@ -106,6 +106,7 @@ public class ViewProtocol {
 
             packet.getItemListModifier().write(0, itemStacks);
 
+            // 发送数据包
             Player player = Bukkit.getPlayer(playerName);
             if (player != null) {
                 try {
@@ -122,25 +123,29 @@ public class ViewProtocol {
         new BukkitRunnable(){
             @Override
             public void run() {
+                // 获取正在浏览的页面
                 ViewPage page = viewGuide.getUsingPage(playerName);
+                // 获取数据包
                 PacketContainer packet = packets.get(playerName);
-                if (packet != null && page != null) {
-                    // 替换东西
-                    List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
-                    for (Map.Entry<Integer, ItemStack> entry : page.getItemMap().entrySet()) {
-                        itemStacks.set(entry.getKey(), entry.getValue());
-                    }
 
-                    // 写入
-                    packet.getItemListModifier().write(0, itemStacks);
+                if (packet == null || page == null) return;
 
-                    Player player = Bukkit.getPlayer(playerName);
-                    if (player != null) {
-                        try {
-                            protocolManager.sendServerPacket(player, packet);
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
+                // 获取页面所有按钮并放置到容器中
+                List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
+                for (Map.Entry<Integer, ItemStack> entry : page.getItemMap().entrySet()) {
+                    itemStacks.set(entry.getKey(), entry.getValue());
+                }
+
+                // 写入
+                packet.getItemListModifier().write(0, itemStacks);
+
+                // 发送数据包
+                Player player = Bukkit.getPlayer(playerName);
+                if (player != null) {
+                    try {
+                        protocolManager.sendServerPacket(player, packet);
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
                     }
                 }
             }

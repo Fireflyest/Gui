@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +44,14 @@ public class SimplePage implements ViewPage {
         this.refreshPage();
     }
 
+    @NotNull
     @Override
-    public Map<Integer, ItemStack> getItemMap(){
+    public Inventory getInventory(){
+        return inventory;
+    }
+
+    @Override
+    public @NotNull Map<Integer, ItemStack> getItemMap(){
         Map<Integer, ItemStack> itemStackMap = new HashMap<>(itemMap);
         // 这里是需要异步加载的按钮
         // 例如需要先读取数据再放置的按钮
@@ -53,15 +60,10 @@ public class SimplePage implements ViewPage {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtonMap() {
+    public @NotNull Map<Integer, ItemStack> getButtonMap() {
         // 这里是固定按钮
         // 打开容器时会先显示
         return new HashMap<>(itemMap);
-    }
-
-    @Override
-    public Inventory getInventory(){
-        return inventory;
     }
 
     @Override

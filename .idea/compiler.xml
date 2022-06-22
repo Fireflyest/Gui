@@ -9,6 +9,8 @@
         <module name="Gui" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="8" />
+    <bytecodeTargetLevel>
+      <module name="Gui" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
